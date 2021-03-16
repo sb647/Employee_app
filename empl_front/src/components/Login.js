@@ -41,6 +41,7 @@ class Login extends React.Component {
              this.props.history.push('/profile');
         }    else {
                  alert("User not found!")
+
         }              
             });
       }

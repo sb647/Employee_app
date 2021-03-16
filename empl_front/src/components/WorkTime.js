@@ -10,17 +10,12 @@ class WorkTime extends Component {
 			list: [],
 			start : true,
 			end : true,
-			date: undefined
+			date: null
 			}
 		filterByDate = this.filterByDate.bind(this);
 		setDate = this.setDate.bind(this);
 
-		setDate (d){
-			this.setState({
-				date: d
-			})
-		};
-
+		
 
 		 componentDidMount(){
 			axios.get('http://localhost:8080/api/role/worktime/' + authService.getCurrentUser().id )
@@ -55,29 +50,36 @@ class WorkTime extends Component {
 			window.location.reload();
 		 }
 
-		 filterByDate(list) {
-		      if(this.state.date) {
-					 return list.filter(
-						(l) => (this.state.date.getTime() === new Date(l.date).getTime()	
-			  ))
-			  } else {
-					return list;
-			  }
 
-			 
+		 setDate(d){
+			this.setState({
+				date: d
+			})
+			}
+
+		  filterByDate(list)  {
+		
+			if(this.state.date !== null) {
+
+				return list.filter(
+						(l) => (this.state.date.getTime() == new Date(l.date).getTime()))
+			}
+			else {
+				return list
+			}
+ 
 		 }
-
 	
 
 	render(){
-		const date = new Date();
+		const date = new Date('2021-03-12');
 		return (
 			<div className="container">
 			<hr>
 			</hr>
 			<div className="row left" >
 			
-			 <DatePicker dateFormat={"yyyy-MM-dd"} selected={date} onChange={date => this.setDate(date)} />
+			  <DatePicker format='yyyy-MM-dd' selected={this.state.date ? this.state.date : date} value={this.state.date} onSelect={date => this.setDate(date)} />
 			 </div>
 					<hr>
 					</hr>
