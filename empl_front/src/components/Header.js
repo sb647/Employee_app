@@ -21,6 +21,7 @@ const Header=()=>{
 
 				 </div>
                   <div className="navbar-nav ml-auto">
+                        <li  className="nav-item"><Link to={"/profile"} className="nav-link"> Profile </Link></li>
                         <li className="nav-item">
                                      <a href="/login" className="nav-link" onClick={()=>localStorage.removeItem("user")} >Sign Out </a>
                          </li>
@@ -37,6 +38,7 @@ const Header=()=>{
 
                  <div className="navbar-nav ml-auto">
                         <li className="nav-item">
+                                     <li  className="nav-item"><Link to={"/profile"} className="nav-link"> Profile </Link></li>
                                      <a href="/login" className="nav-link" onClick={()=>localStorage.removeItem("user")}>Sign Out </a>
                          </li>
                   </div>

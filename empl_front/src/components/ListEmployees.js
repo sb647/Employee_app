@@ -8,7 +8,7 @@ class ListEmployees extends Component {
 		state = {
 			list: [],
 			q: '',
-			date: undefined
+			date: null
 		}
 
 		addEmployee = this.addEmployee.bind(this);
@@ -18,6 +18,8 @@ class ListEmployees extends Component {
 		setAsAdmin = this.setAsAdmin.bind(this);
 		filterByDate = this.filterByDate.bind(this);
 		setDate = this.setDate.bind(this);
+		
+		
 
 
 		 componentDidMount(){
@@ -29,12 +31,7 @@ class ListEmployees extends Component {
          })
 		 }
 
-		 setDate (d){
-			this.setState({
-				date: d
-			})
-		};
-
+		 
 
 		 addEmployee() {
 			  this.props.history.push('/addemployee/');
@@ -66,32 +63,43 @@ class ListEmployees extends Component {
 			 this.setState({q: e.target.value})
 		  }
 
+		  setDate(d){
+			this.setState({
+				date: d
+			})
+			
+		};
+
+
 		 search(list) {
-			  return this.state.list.filter(
+			  return list.filter(
 					(l) => l.employee.name.toLowerCase().indexOf(this.state.q.toLowerCase()) > -1 ||
-					l.employee.surname.toLowerCase().indexOf(this.state.q.toLowerCase()) > -1
+					l.employee.surname.toLowerCase().indexOf(this.state.q.toLowerCase()) > -1 ||
+					`${l.employee.name} ${l.employee.surname}`.toLowerCase().indexOf(this.state.q.toLowerCase()) > -1 
 			  );
 		 }
 
-		 filterByDate(list) {
-		      if(this.state.date) {
-					 return this.state.list.filter(
-						(l) => (this.state.date.getTime() === new Date(l.date).getTime()	
-			  ))
-			  } else {
-					return this.state.list;
-			  }
-
-			 
+		 filterByDate(list)  {
+		
+			if(this.state.date !== null) {
+		
+			
+				return list.filter(
+						(l) => (this.state.date.getTime() == new Date(l.date).getTime()))
+			}
+			else {
+				return list
+			}
+ 
 		 }
 
 
 	render(){
-	const date = new Date();
+	const date = new Date('2021-03-12');
 		return (
 			<div className="container">
 					<div className="row">
-						 <DatePicker dateFormat={"yyyy-MM-dd"} selected={date} onChange={date => this.setDate(date)} />
+						 <DatePicker format='yyyy-MM-dd' selected={this.state.date ? this.state.date : date} value={this.state.date} onSelect={date => this.setDate(date)} />
 						<input type="text" placeholder="Search..." value={this.state.q} onChange={this.setQ} style={{marginLeft:"20px", width: "200px"}}/>
 						</div>
 					<hr>

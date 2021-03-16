@@ -57,11 +57,11 @@ class WorkTime extends Component {
 
 		 filterByDate(list) {
 		      if(this.state.date) {
-					 return this.state.list.filter(
+					 return list.filter(
 						(l) => (this.state.date.getTime() === new Date(l.date).getTime()	
 			  ))
 			  } else {
-					return this.state.list;
+					return list;
 			  }
 
 			 

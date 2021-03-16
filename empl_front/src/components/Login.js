@@ -39,7 +39,9 @@ class Login extends React.Component {
             if (response.data.token) {
             localStorage.setItem("user", JSON.stringify(response.data));
              this.props.history.push('/profile');
-        }                    
+        }    else {
+                 alert("User not found!")
+        }              
             });
       }
         
