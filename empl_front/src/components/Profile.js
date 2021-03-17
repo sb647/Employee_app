@@ -19,23 +19,25 @@ class Profile extends Component {
  
 	 componentDidMount(){
 	  
-		 axios.get(URL + "profile/"+ authService.getCurrentUser().id , { headers: authHeader() })
-			.then(response => { 
-				this.setState ({
-				user: response.data
-				});
-			}).catch(error => {
-				alert(error)
+		if(localStorage.getItem('user')){
+			 axios.get(URL + "profile/"+ authService.getCurrentUser().id ,  {
+			  headers: authHeader()
 			})
+				.then(response => { 
+					this.setState ({
+					user: response.data
+					});
+				})
 		 
-		 axios.get(URL + "img/" + authService.getCurrentUser().id, { headers: authHeader() })
-		.then(response => {
-			this.setState ({
-				img: response.data
-			});
-		 }).catch(error => {
-			alert(error)
-		 })
+			 axios.get(URL + "img/" + authService.getCurrentUser().id,  {
+			  headers: authHeader()
+			})
+			.then(response => {
+				this.setState ({
+					img: response.data
+				});
+			 })
+		 }
 		
 	 }
 	

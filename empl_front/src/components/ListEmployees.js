@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import authHeader from '../services/authHeader';
+import Login from './Login.js'
 
 class ListEmployees extends Component {
 	
@@ -18,17 +20,17 @@ class ListEmployees extends Component {
 		setAsAdmin = this.setAsAdmin.bind(this);
 		filterByDate = this.filterByDate.bind(this);
 		setDate = this.setDate.bind(this);
-		
-		
 
 
-		 componentDidMount(){
-        axios.get('http://localhost:8080/api/role/worktime/')
-        .then(response => {
-            this.setState ({
-                list: response.data
-            });
-         })
+		componentDidMount(){
+			axios.get('http://localhost:8080/api/role/worktime', {
+			  headers: authHeader()
+			}).then(response => {
+				this.setState ({
+					list: response.data
+				})
+			
+				})
 		 }
 
 		 
@@ -43,18 +45,17 @@ class ListEmployees extends Component {
 		 }
 
 		 removeEmployee(id) {
-			 axios.delete('http://localhost:8080/api/role/worktime/' + id)
+			 axios.delete('http://localhost:8080/api/role/worktime/' + id, { headers: authHeader() } )
 				.then(response => {
-					 alert("OK!");
-					 this.props.history.push('/employees');
+					 window.location.reload();
 				 })
 		 }
 
 		 setAsAdmin(id) {
-			axios.post('http://localhost:8080/api/role/admin/' + id)
+			axios.post('http://localhost:8080/api/role/admin/' + id, { headers: authHeader() })
 				.then(response => {
-					 alert("OK!");
-					 this.props.history.push('/employees');
+					
+					 window.location.reload();
 				 })
 
 		 }

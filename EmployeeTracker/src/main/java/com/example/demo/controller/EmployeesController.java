@@ -26,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -67,7 +68,6 @@ public class EmployeesController {
     private EmailSenderService emailSenderService;
 
 
-
     @PostMapping("/api/auth/login")
     public ResponseEntity<?> logIn(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -85,14 +85,14 @@ public class EmployeesController {
     }
 
     @GetMapping("/api/role/img/{id}")
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) {
         Employee emp = emplRepository.findByid(id);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(emp.getImage());
     }
 
     @GetMapping("/api/role/profile/{id}")
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Employee> getProfileData(@PathVariable("id") Long id) {
         Employee emp = emplRepository.findByid(id);
         if(emp == null) throw new NoSuchElementException("Employee does not exist");
@@ -100,14 +100,14 @@ public class EmployeesController {
     }
 
     @GetMapping("/api/role/admin/img/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<byte[]> getEmplImage(@PathVariable("id") Long id) {
         Employee emp = emplRepository.findByid(id);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(emp.getImage());
     }
 
     @GetMapping("/api/role/admin/profile/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Employee> getEmpData(@PathVariable("id") Long id) {
         Employee emp = emplRepository.findByid(id);
         if(emp == null) throw new NoSuchElementException("Employee does not exist");
@@ -116,9 +116,9 @@ public class EmployeesController {
 
 
     @PostMapping("/api/role/signin")
-   // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void saveEmployee(@RequestBody Employee empl) {
-        Role role = roleRepository.findByName(ERole.USER).get();
+        Role role = roleRepository.findByName(ERole.ROLE_USER).get();
         Set<Role> set = new HashSet<>();
         set.add(role);
         empl.setRoles(set);
@@ -132,12 +132,12 @@ public class EmployeesController {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(empl.getEmail());
         mailMessage.setSubject("Complete Registration!");
-        mailMessage.setFrom("silvanabakula@gmail.com");
+        mailMessage.setFrom("<maill>");
         mailMessage.setText("To confirm your account, please click here : "
                 +"http://localhost:8080/api/role/confirmaccount?token="+confirmationToken.getConfirmationToken());
-
         emailSenderService.sendEmail(mailMessage);
     }
+
 
     @RequestMapping(value="/api/role/confirmaccount", method= {RequestMethod.GET, RequestMethod.POST})
     public void confirmUserAccount(@RequestParam("token")String confirmationToken)
@@ -152,7 +152,7 @@ public class EmployeesController {
     }
 
     @PostMapping("/api/role/storeImg/{email}")
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void storeImage(@PathVariable String email,  @RequestParam("imageFile") MultipartFile image) {
         try{
             emplService.storeImage(email, image);
@@ -160,7 +160,7 @@ public class EmployeesController {
         }
     }
     @PutMapping("/api/role/update/{id}")
-   // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Employee> updateEmployee(@PathVariable("id")Long id, @RequestBody Employee updatedEmpl) {
         Employee emp = emplRepository.findByid(id);
         if(emp == null) throw new NoSuchElementException("Employee does not exist");

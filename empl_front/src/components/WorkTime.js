@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import authService from "../services/authService";
+import authHeader from '../services/authHeader';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -18,35 +19,51 @@ class WorkTime extends Component {
 		
 
 		 componentDidMount(){
-			axios.get('http://localhost:8080/api/role/worktime/' + authService.getCurrentUser().id )
-			.then(response => {
-				this.setState ({
-					list: response.data
-				});
-			 })
+		 if(localStorage.getItem('user')){
+				axios.get('http://localhost:8080/api/role/worktime/' + authService.getCurrentUser().id,  {
+			  headers: authHeader()
+			} )
+				.then(response => {
+					this.setState ({
+						list: response.data
+					});
+				 })
 
-			 axios.get('http://localhost:8080/api/role/today/' + authService.getCurrentUser().id )
-			.then(response => {
-				this.setState ({
-					start : response.data
-				});
-			 })
+				 axios.get('http://localhost:8080/api/role/today/' + authService.getCurrentUser().id,  {
+			  headers: authHeader()
+			})
+				.then(response => {
+					this.setState ({
+						start : response.data
+					});
+				 })
 
-			 axios.get('http://localhost:8080/api/role/endToday/' + authService.getCurrentUser().id )
-			.then(response => {
-				this.setState ({
-					end : response.data
-				});
+				 axios.get('http://localhost:8080/api/role/endToday/' + authService.getCurrentUser().id,  {
+			  headers: authHeader()
 			 })
+				.then(response => {
+					this.setState ({
+						end : response.data
+					});
+				 })
+			 }
 		 }
 
 		 storeStartingTime() {
-			axios.post('http://localhost:8080/api/role/start/' + authService.getCurrentUser().id );
+			axios.post('http://localhost:8080/api/role/start/' + authService.getCurrentUser().id,  {
+		  headers: {
+			'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+		  }
+		});
 			window.location.reload();
 		 }
 
 		 storeEndingTime() {
-			axios.post('http://localhost:8080/api/role/end/' + authService.getCurrentUser().id );
+			axios.post('http://localhost:8080/api/role/end/' + authService.getCurrentUser().id,  {
+		  headers: {
+			'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+		  }
+		});
 			window.location.reload();
 		 }
 

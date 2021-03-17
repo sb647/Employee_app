@@ -17,6 +17,7 @@ class UserProfile extends Component {
   }
 
      componentDidMount(){
+
         const emp = this.props.matchLink.match.params.id;
       
         axios.get(URL + "profile/"+ emp, { headers: authHeader() })

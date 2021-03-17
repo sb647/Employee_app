@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import "../style.css";
 import authHeader from '../services/authHeader';
+import Login from './Login.js'
 
 const URL = "http://localhost:8080/api/role/";
 
@@ -35,20 +36,23 @@ state= {
             name: this.state.name,
 			surname: this.state.surname,
 			email: this.state.email,
-			phone: this.state.areaNum + this.state.phone,
+			phone: `${this.state.areaNum} ${this.state.phone}`,
 			position: this.state.position,
 			password: this.state.password,
 			image: null
         };
-		axios.post(URL + 'signin', data).then(response=>{    
-				});
+		axios.post(URL + 'signin', data, {
+		  headers: authHeader()
+		}).then(response=>{    
+				},  error => {alert(error)});
 
 		if(this.state.image ) {
 			let img =new FormData();
 			img.append('imageFile', this.state.image);
 			axios.post(URL + "storeImg/"+this.state.email, img, {
 			  headers: {
-				'content-type': 'multipart/form-data'
+			  'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`,
+			  'content-type': 'multipart/form-data'
 			  }
 			 });
 		}
@@ -64,6 +68,7 @@ state= {
 	
 
 	render(){
+		
 		return (
 
 				<div className="card bg-light">
@@ -96,7 +101,7 @@ state= {
   <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
 </svg> </span>
 			 </div>
-			<input name="mail" className="form-control" placeholder="Email address" type="email" onChange={this.setValue}/>
+			<input name="email" className="form-control" placeholder="Email address" type="email" onChange={this.setValue}/>
 		</div> 
 		<div className="form-group input-group">
     		<div className="input-group-prepend">
@@ -150,12 +155,14 @@ state= {
 		</div> 
 
 		<div className="form-group">
-			<button type="submit" className="btn btn-primary btn-block"> Create Account  </button>
+			<button type="submit" className="btn btn-primary btn-block" disabled= {this.state.email.length === 0 || this.state.password.length===0 || !localStorage.getItem('user')} > Create Account  </button>
 		</div>                                                                   
 	</form>
 	</article>
 	</div> 
-		)}
+		)
+	
+	}
 }
 
 export default AddEmployee

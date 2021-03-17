@@ -17,7 +17,8 @@ class Login extends React.Component {
         
         this.state = {
           email:'',
-          password:''
+          password:'',
+          msg: ''
 
     };
   }
@@ -29,6 +30,9 @@ class Login extends React.Component {
    }
 
    handleSubmit(e){
+         this.setState({
+                msg: ''
+         })  
          e.preventDefault();
           const data = {
              email: this.state.email,
@@ -39,11 +43,14 @@ class Login extends React.Component {
             if (response.data.token) {
             localStorage.setItem("user", JSON.stringify(response.data));
              this.props.history.push('/profile');
-        }    else {
-                 alert("User not found!")
-
-        }              
-            });
+        }   
+            },
+             error => {
+              this.setState({
+                msg: "Bad credentials"
+              })
+                
+             })
       }
         
   
@@ -51,15 +58,6 @@ class Login extends React.Component {
 		return (
 
 		<div className="container-fluid">
-
-        {this.state.message && (
-              <div className="form-group">
-                <div className="alert alert-danger" role="alert">
-                  {this.state.message}
-                </div>
-              </div>
-            )}
-
   <div className="row no-gutter">
     <div className="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
     <div className="col-md-8 col-lg-6">
@@ -88,9 +86,18 @@ class Login extends React.Component {
 			</div>
 			<input className="form-control " placeholder="Password" name="password" type="password" onChange={this.setValue}/>
 		</div>
+             {this.state.msg && (
+              <div className="form-group">
+                <div className="alert alert-danger" role="alert">
+                  {this.state.msg}
+                </div>
+              </div>
+            )}
 
                 <button className="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit" disabled={this.state.email.length === 0 || this.state.password.length===0}>Sign in</button>
-              
+
+             
+
               </form>
             </div>
           </div>
